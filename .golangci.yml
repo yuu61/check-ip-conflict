@@ -1,0 +1,83 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: all
+  disable:
+    # スタイル過剰・好み分かれる系
+    - wsl
+    - wsl_v5
+    - nlreturn
+    - lll
+    - varnamelen
+    - godox
+    - godot
+    - exhaustruct
+    - gochecknoglobals
+    - gochecknoinits
+    - depguard
+    - tagliatelle
+    - paralleltest
+    - testpackage
+    - ireturn
+    - nonamedreturns
+    - mnd
+    - noinlineerr
+    # 複雑度・サイズ系 (このCLIではmain関数が手続き的に長いのを許容)
+    - funlen
+    - nestif
+    - cyclop
+    - gocyclo
+    - gocognit
+    - maintidx
+    - dupl
+    # エラーラップ強制 (CLIで都度ラップする必要は薄い)
+    - err113
+    - wrapcheck
+    # CLIツールなので標準出力/標準エラーへの fmt.Print 系は許可
+    - forbidigo
+    # 日本語UIメッセージを許可 (i18n対応ライブラリではない)
+    - gosmopolitan
+    # 廃止予定 (gomodguard_v2 へ移行案内が出るためここでは無効化)
+    - gomodguard
+
+  settings:
+    revive:
+      rules:
+        - name: var-naming
+          arguments:
+            - [] # allowList
+            - [] # denyList
+            - - upperCaseConst: true
+                skipPackageNameChecks: true
+        - name: exported
+        - name: indent-error-flow
+        - name: error-return
+        - name: error-naming
+        - name: increment-decrement
+        - name: range
+        - name: receiver-naming
+        - name: superfluous-else
+        - name: time-naming
+        - name: unexported-return
+        - name: unreachable-code
+        - name: unused-parameter
+    gosec:
+      excludes:
+        - G204 # 外部コマンドへの可変引数: 本ツールは設計上、IP/IF名を渡す必要がある
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - performance
+        - style
+        - opinionated
+      disabled-checks:
+        - ifElseChain
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+    - gofumpt
